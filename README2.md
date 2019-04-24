@@ -1,2 +1,0 @@
-# commontools
-go common tools
