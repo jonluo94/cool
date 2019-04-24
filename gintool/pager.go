@@ -1,4 +1,4 @@
-package gin
+package gintool
 
 import "math"
 

@@ -1,4 +1,4 @@
-package gin
+package gintool
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/tommy351/gin-sessions"
