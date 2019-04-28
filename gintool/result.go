@@ -10,6 +10,10 @@ const (
 	Fail
 )
 
+func ResultMap(ctx *gin.Context,m map[string]interface{}) {
+	ctx.JSON(http.StatusOK, m)
+}
+
 func ResultMsg(ctx *gin.Context, msg string) {
 	ctx.JSON(http.StatusOK, gin.H{"code": Success, "data": nil, "msg": msg})
 }

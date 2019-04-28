@@ -11,25 +11,25 @@ type Pager struct {
 	NumStart  int64   `form:"numStart"  json:"numStart"`   //开始序数
 }
 
-func CreatePager(page, pagesize, total int64) *Pager {
+func CreatePager(page, pagesize int64) *Pager {
 	if page < 1 {
 		page = 1
 	}
 	if pagesize < 1 {
 		pagesize = 10
 	}
-
-	pageCount := math.Ceil(float64(total) / float64(pagesize))
-
 	pager := new(Pager)
 	pager.Page = page
 	pager.PageSize = pagesize
-	pager.Total = total
-	pager.PageCount = int64(pageCount)
 	pager.setNumStart()
 	return pager
 }
 
 func (p *Pager) setNumStart() {
 	p.NumStart = (p.Page - 1) * p.PageSize
+}
+
+func (p *Pager) SetTotal(total int64) {
+	p.Total = total
+	p.PageCount =int64(math.Ceil(float64(total) / float64(p.PageSize)))
 }
