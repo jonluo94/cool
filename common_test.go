@@ -4,6 +4,8 @@ import (
 	"github.com/jonluo94/commontools/log"
 	"testing"
 	"github.com/jonluo94/commontools/xorm"
+	"github.com/jonluo94/commontools/password"
+	"fmt"
 )
 
 
@@ -28,4 +30,13 @@ func TestXorm(test *testing.T) {
 	user := &User{}
 	engine := xorm.GetEngine("xorm/config.yaml")
 	engine.CreateTables(user)
+}
+
+
+func TestPassword(test *testing.T) {
+
+	cry := password.Encode("admin",12,"default")
+    fmt.Println(cry)
+	b := password.Validate("admin",cry)
+	fmt.Println(b)
 }
