@@ -19,19 +19,6 @@ type Store interface {
 	Options(Options)
 }
 
-// Options stores configuration for a session or session store.
-// Fields are a subset of http.Cookie fields.
-type Options struct {
-	Path   string
-	Domain string
-	// MaxAge=0 means no 'Max-Age' attribute specified.
-	// MaxAge<0 means delete cookie now, equivalently 'Max-Age: 0'.
-	// MaxAge>0 means Max-Age attribute present and given in seconds.
-	MaxAge   int
-	Secure   bool
-	HttpOnly bool
-}
-
 // Wraps thinly gorilla-session methods.
 // Session stores the values and optional configuration for a session.
 type Session interface {
@@ -51,7 +38,7 @@ type Session interface {
 	// A single variadic argument is accepted, and it is optional: it defines the flash key.
 	// If not defined "_flash" is used by default.
 	Flashes(vars ...string) []interface{}
-	// Options sets confuguration for a session.
+	// Options sets configuration for a session.
 	Options(Options)
 	// Save saves all sessions used during the current request.
 	Save() error
@@ -61,6 +48,18 @@ func Sessions(name string, store Store) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		s := &session{name, c.Request, store, nil, false, c.Writer}
 		c.Set(DefaultKey, s)
+		defer context.Clear(c.Request)
+		c.Next()
+	}
+}
+
+func SessionsMany(names []string, store Store) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		sessions := make(map[string]Session, len(names))
+		for _, name := range names {
+			sessions[name] = &session{name, c.Request, store, nil, false, c.Writer}
+		}
+		c.Set(DefaultKey, sessions)
 		defer context.Clear(c.Request)
 		c.Next()
 	}
@@ -106,13 +105,7 @@ func (s *session) Flashes(vars ...string) []interface{} {
 }
 
 func (s *session) Options(options Options) {
-	s.Session().Options = &sessions.Options{
-		Path:     options.Path,
-		Domain:   options.Domain,
-		MaxAge:   options.MaxAge,
-		Secure:   options.Secure,
-		HttpOnly: options.HttpOnly,
-	}
+	s.Session().Options = options.ToGorillaOptions()
 }
 
 func (s *session) Save() error {
@@ -144,4 +137,9 @@ func (s *session) Written() bool {
 // shortcut to get session
 func Default(c *gin.Context) Session {
 	return c.MustGet(DefaultKey).(Session)
+}
+
+// shortcut to get session with given name
+func DefaultMany(c *gin.Context, name string) Session {
+	return c.MustGet(DefaultKey).(map[string]Session)[name]
 }
