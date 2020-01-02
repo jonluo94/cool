@@ -1,7 +1,7 @@
 package xorm
 
 import (
-	"github.com/go-xorm/core"
+	"xorm.io/core"
 	"fmt"
 	"github.com/op/go-logging"
 )
