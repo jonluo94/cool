@@ -3,9 +3,9 @@ package util
 import (
 	"reflect"
 	"bytes"
-	"github.com/jonluo94/commontools/log"
 	"k8s.io/apimachinery/pkg/util/yaml"
 	"os"
+	"github.com/jonluo94/cool/log"
 )
 
 const (

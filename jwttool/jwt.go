@@ -3,7 +3,7 @@ package jwttool
 import (
 	"github.com/dgrijalva/jwt-go"
 	"fmt"
-	"github.com/jonluo94/commontools/log"
+	"github.com/jonluo94/cool/log"
 )
 
 var logger = log.GetLogger("jwttool", log.ERROR)

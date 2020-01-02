@@ -11,8 +11,8 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-xorm/core v0.6.0
 	github.com/go-xorm/xorm v0.7.9
-	github.com/jonluo94/commontools v0.0.0-20190516090321-9a59da01a855
 	github.com/json-iterator/go v1.1.9
+	github.com/mattn/go-sqlite3 v2.0.2+incompatible // indirect
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/spf13/viper v1.6.1
 	github.com/tommy351/gin-sessions v0.0.0-20150617141853-353060947eb6

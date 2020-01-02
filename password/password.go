@@ -2,7 +2,7 @@ package password
 
 import (
 	"github.com/alexandrevicenzi/unchained"
-	"github.com/jonluo94/commontools/log"
+	"github.com/jonluo94/cool/log"
 )
 var logger = log.GetLogger("password",log.ERROR)
 

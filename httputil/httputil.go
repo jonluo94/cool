@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"strings"
 	"io/ioutil"
-	"github.com/jonluo94/commontools/log"
 	"net/url"
-	"github.com/jonluo94/commontools/json"
 	"os"
 	"bytes"
 	"mime/multipart"
 	"io"
 	"path/filepath"
+	"github.com/jonluo94/cool/log"
+	"github.com/jonluo94/cool/json"
 )
 
 var logger = log.GetLogger("httputil", log.ERROR)
