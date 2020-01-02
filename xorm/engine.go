@@ -2,14 +2,17 @@ package xorm
 
 import (
 	"io/ioutil"
-	"github.com/jonluo94/commontools/log"
 	"gopkg.in/yaml.v2"
 	"github.com/go-xorm/xorm"
-     _ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 
+	"github.com/go-xorm/core"
+	"time"
+	"github.com/jonluo94/cool/log"
 )
 
-var logger = log.GetLogger("xorm", log.ERROR)
+var level = log.ERROR
+var logger = log.GetLogger("xorm", level)
 
 type Xorm struct {
 	Config *MysqlConfig `yaml:"xorm"`
@@ -27,9 +30,9 @@ type MysqlConfig struct {
 	Maxopen   int    `yaml:"maxopen"`
 }
 
-func newXorm() *Xorm{
+func newXorm() *Xorm {
 	return &Xorm{
-		Config:&MysqlConfig{},
+		Config: &MysqlConfig{},
 	}
 }
 func loadConfig(file string) *MysqlConfig {
@@ -54,8 +57,15 @@ func GetEngine(configFile string) *xorm.Engine {
 		logger.Error(err.Error())
 	}
 	// 打印sql
+	xormLogger := &OrmLogger{
+		logger: logger,
+		level:  core.LogLevel(level),
+	}
+	engine.SetLogger(xormLogger)
 	engine.ShowSQL(config.Showsql)
 	engine.SetMaxIdleConns(config.Maxidle)
 	engine.SetMaxOpenConns(config.Maxopen)
+	//连接生存时间半个小时
+	engine.SetConnMaxLifetime(1800 * time.Second)
 	return engine
 }

@@ -9,6 +9,7 @@ require (
 	github.com/gin-contrib/sessions v0.0.3
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-sql-driver/mysql v1.4.1
+	github.com/go-xorm/core v0.6.0
 	github.com/go-xorm/xorm v0.7.9
 	github.com/jonluo94/commontools v0.0.0-20190516090321-9a59da01a855
 	github.com/json-iterator/go v1.1.9
