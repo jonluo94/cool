@@ -65,6 +65,7 @@ func PostJson(uri string, jsons interface{}) []byte {
 	resp, err := client.Do(req)
 	if err != nil {
 		logger.Error(err.Error())
+		return nil
 	}
 	defer resp.Body.Close()
 	//响应
@@ -82,6 +83,7 @@ func PostForm(uri string, paras map[string][]string) []byte {
 	resp, err := http.PostForm(uri, url.Values(paras))
 	if err != nil {
 		logger.Error(err.Error())
+		return nil
 	}
 	defer resp.Body.Close()
 
@@ -98,6 +100,7 @@ func Get(uri string) []byte {
 	resp, err := http.Get(uri)
 	if err != nil {
 		logger.Error(err.Error())
+		return nil
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
