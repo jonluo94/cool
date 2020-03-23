@@ -69,3 +69,13 @@ func GetEngine(configFile string) *xorm.Engine {
 	engine.SetConnMaxLifetime(1800 * time.Second)
 	return engine
 }
+
+func GetEngineGroup(engines []*xorm.Engine) *xorm.EngineGroup {
+	master := engines[0]
+	slaves := engines[1:]
+	eg, err := xorm.NewEngineGroup(master, slaves)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+	return eg
+}
