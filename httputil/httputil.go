@@ -17,6 +17,30 @@ import (
 
 var logger = log.GetLogger("httputil", log.ERROR)
 
+func PostMultiFile(file multipart.File,fileParam,filename, targetUrl string,params map[string]string) (*http.Response, error) {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile(fileParam, filename)
+	if err != nil {
+		return nil, err
+	}
+	_, err = io.Copy(part, file)
+
+	for key, val := range params {
+		_ = writer.WriteField(key, val)
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	request, err := http.NewRequest("POST", targetUrl, body)
+	request.Header.Add("Content-Type", writer.FormDataContentType())
+
+	client := &http.Client{}
+	return client.Do(request)
+}
+
 func PostFile(fileParam,filename string, targetUrl string,params map[string]string) (*http.Response, error) {
 
 	file, err := os.Open(filename)
