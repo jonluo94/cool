@@ -17,30 +17,6 @@ import (
 
 var logger = log.GetLogger("httputil", log.ERROR)
 
-func PostMultiFile(file multipart.File,fileParam,filename, targetUrl string,params map[string]string) (*http.Response, error) {
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-	part, err := writer.CreateFormFile(fileParam, filename)
-	if err != nil {
-		return nil, err
-	}
-	_, err = io.Copy(part, file)
-
-	for key, val := range params {
-		_ = writer.WriteField(key, val)
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	request, err := http.NewRequest("POST", targetUrl, body)
-	request.Header.Add("Content-Type", writer.FormDataContentType())
-
-	client := &http.Client{}
-	return client.Do(request)
-}
-
 func PostFile(fileParam,filename string, targetUrl string,params map[string]string) (*http.Response, error) {
 
 	file, err := os.Open(filename)
@@ -70,6 +46,56 @@ func PostFile(fileParam,filename string, targetUrl string,params map[string]stri
 
 	client := &http.Client{}
 	return client.Do(request)
+}
+
+
+func PostMultiFile(file multipart.File,fileParam,filename, targetUrl string,params map[string]string) []byte {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile(fileParam, filename)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil
+	}
+	_, err = io.Copy(part, file)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil
+	}
+
+	for key, val := range params {
+		err = writer.WriteField(key, val)
+		if err != nil {
+			logger.Error(err.Error())
+			return nil
+		}
+	}
+
+	err = writer.Close()
+	if err != nil {
+		logger.Error(err.Error())
+		return nil
+	}
+
+	request, err := http.NewRequest("POST", targetUrl, body)
+	request.Header.Add("Content-Type", writer.FormDataContentType())
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil
+	}
+	defer resp.Body.Close()
+	//响应
+	response, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logger.Error("Read failed:", err)
+		return nil
+	}
+
+	//返回结果
+	return response
 }
 
 func PostJson(uri string, jsons interface{}) []byte {
