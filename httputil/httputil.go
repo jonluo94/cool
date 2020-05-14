@@ -134,7 +134,11 @@ func PostJson(uri string, jsons interface{}) []byte {
 		logger.Error(err.Error())
 	}
 	req.Header.Set("Content-Type", "application/json;charset=utf-8")
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: &http.Transport{
+			DisableKeepAlives: false,
+		},
+	}
 	resp, err := client.Do(req)
 	if err != nil {
 		logger.Error(err.Error())
