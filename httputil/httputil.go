@@ -13,9 +13,28 @@ import (
 	"path/filepath"
 	"github.com/jonluo94/cool/log"
 	"github.com/jonluo94/cool/json"
+	"syscall"
 )
 
 var logger = log.GetLogger("httputil", log.ERROR)
+var ulimit uint64 = 65535
+//http 发生 too many open files 解决方法
+func Ulimit()  {
+	var rlim syscall.Rlimit
+	err := syscall.Getrlimit(syscall.RLIMIT_NOFILE,&rlim)
+	if err != nil {
+		logger.Info("get rlimit error: " + err.Error())
+		os.Exit(1)
+	}
+	rlim.Cur = ulimit
+	rlim.Max = ulimit
+	err = syscall.Setrlimit(syscall.RLIMIT_NOFILE,&rlim)
+	if err != nil {
+		logger.Info("set rlimit error: " + err.Error())
+		os.Exit(1)
+	}
+	logger.Info("ulimit -n %d",ulimit)
+}
 
 func PostLocalFile(fileParam,filename string, targetUrl string,params map[string]string) []byte  {
 
