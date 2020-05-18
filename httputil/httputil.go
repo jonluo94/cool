@@ -17,9 +17,8 @@ import (
 )
 
 var logger = log.GetLogger("httputil", log.ERROR)
-var ulimit uint64 = 65535
 //http 发生 too many open files 解决方法
-func Ulimit()  {
+func Ulimit(ulimit uint64)  {
 	var rlim syscall.Rlimit
 	err := syscall.Getrlimit(syscall.RLIMIT_NOFILE,&rlim)
 	if err != nil {
